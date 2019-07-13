@@ -6,58 +6,87 @@ public class MyList<E> {
     private Object elements[];
 
     public MyList() {
-        elements = new Object[DEFAULT_CAPACITY];
+        this.elements = new Object[DEFAULT_CAPACITY];
     }
 
     public MyList(int capacity) {
-        elements = new Object[capacity];
+        this.size = capacity;
     }
 
-    public void add(int index, E e) {
-        for (int i = elements.length - 1; i >= index; i--) {
-            elements[i] = elements[i - 1];
+    private void ensureCapa() {
+        int newSize = this.elements.length * 2;
+        this.elements = Arrays.copyOf(this.elements, newSize);
+    }
+
+    public void add(int index, E element) {
+        if (this.size == this.DEFAULT_CAPACITY) {
+            this.ensureCapa();
         }
-        elements[index - 1] = e;
+        this.elements[this.size++] = element;
     }
 
     public E remove(int index) {
-        for (int i = index; i < elements.length; i++) {
-            elements[i] = elements [index +1];
+        E temp = (E) this.elements[index];
+        for (int i = index; i < size; i++) {
+            this.elements[i - 1] = this.elements[i];
         }
-        return (E) elements;
+        this.size--;
+        return temp;
     }
 
-    public int size () {
-        return elements.length;
+    public int size() {
+        return this.size;
     }
 
-    public E clone () {
-        E e = (E) Arrays.copyOf(elements, elements.length);
-        return e;
+    public Object clone() {
+        MyList<E> myList = new MyList<E>();
+        myList.elements = this.elements;
+        myList.size = this.size;
+        return myList;
     }
 
-    public boolean isContains (E o) {
-        for (int i=0; i<elements.length; i++) {
-            if (o == elements[i]) {
+    public boolean isContains(E o) {
+        for (int i = 0; i < size; i++) {
+            if ((E) this.elements[i] == o) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int indexOf(E o) {
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if ((E) this.elements[i] == o) {
+                index = i;
                 break;
             }
         }
-        return true;
+        return index;
     }
 
-    public void ensureCapacity (int minCapacity) {
-        int newSize = minCapacity ;
-        elements = Arrays.copyOf(elements, newSize);
-    }
-
-    public E get (int index) {
+    public E get(int index) {
         E e = (E) elements[index - 1];
         return e;
     }
 
-    public void clear () {
-        for (int i=0; i<elements.length; i++) {
-            elements[i] = null;
+    public boolean add(E e) {
+        if (this.size == this.DEFAULT_CAPACITY) {
+            this.ensureCapa();
         }
+        if (e == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public E get() {
+        return get();
+    }
+
+    public void clear() {
+        this.size = 0;
+        this.elements = null;
     }
 }
+
